@@ -1,0 +1,2137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reaching the Unreachable - Secure Donation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --secondary: #8BC34A;
+            --accent: #FF9800;
+            --dark: #333;
+            --light: #f9f9f9;
+            --white: #ffffff;
+            --error: #f44336;
+            --success: #4CAF50;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        /* Header & Navigation */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--accent);
+        }
+        
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .nav-menu a:hover {
+            color: var(--primary);
+        }
+        
+        /* Page Sections */
+        .page {
+            display: none;
+            padding: 2rem 0;
+            min-height: calc(100vh - 180px);
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('kids.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 6rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+        
+        .btn:hover {
+            background-color: #F57C00;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn-secondary {
+            background-color: var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #1B5E20;
+        }
+        
+        /* About Section */
+        .about-content {
+            background-color: var(--white);
+            padding: 3rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+        
+        .about-content p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .leader-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 3rem;
+            text-align: center;
+        }
+        
+        .leader-img {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            border: 5px solid var(--secondary);
+            box-shadow: var(--shadow);
+        }
+        
+        .impact-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .stat-card {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Our Work Section */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .gallery-item {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+        }
+        
+        .gallery-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .gallery-content {
+            padding: 1.5rem;
+        }
+        
+        .gallery-content h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        
+        /* Donation Section */
+        .donation-form {
+            background-color: var(--white);
+            padding: 3rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+        }
+        
+        .form-control.error {
+            border-color: var(--error);
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .donation-type {
+            display: flex;
+            margin-bottom: 2rem;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .donation-type-btn {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background-color: #eee;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .donation-type-btn:first-child {
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .donation-type-btn:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .donation-type-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .amount-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 576px) {
+            .amount-options {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        .amount-option {
+            padding: 1.2rem;
+            text-align: center;
+            background-color: #eee;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .amount-option:hover, .amount-option.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .donor-info {
+            background-color: #f5f5f5;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .processing-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .processing-spinner {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            width: 300px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-message, .error-message-box {
+            display: none;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .success-message {
+            background-color: #e8f5e9;
+            color: var(--success);
+            border: 1px solid #c8e6c9;
+        }
+        
+        .error-message-box {
+            background-color: #ffebee;
+            color: var(--error);
+            border: 1px solid #ffcdd2;
+        }
+        
+        /* Proof Upload Section */
+        .proof-upload {
+            background-color: #f5f5f5;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: #e8f5e9;
+        }
+        
+        .upload-area i {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-preview {
+            display: none;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .upload-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 4px;
+        }
+        
+        /* Contact Section */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+        
+        @media (min-width: 768px) {
+            .contact-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .contact-info {
+            background-color: var(--white);
+            padding: 2.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        .contact-method {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .contact-method i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-right: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+        
+        .contact-form {
+            background-color: var(--white);
+            padding: 2.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .footer-content {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .footer-section p {
+            margin-bottom: 1rem;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin-right: 1rem;
+            color: white;
+            font-size: 1.8rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--accent);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Admin Panel */
+        .admin-panel {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        .admin-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .admin-tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .admin-tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .admin-content {
+            display: none;
+        }
+        
+        .admin-content.active {
+            display: block;
+        }
+        
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .media-item {
+            position: relative;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .media-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .media-actions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0,0,0,0.7);
+            padding: 0.5rem;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .media-actions button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            margin: 0 0.5rem;
+        }
+        
+        /* Donation List */
+        .donation-item {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .donation-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-verified {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent);
+            border-radius: 2px;
+        }
+        
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mt-3 { margin-top: 3rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        .mb-3 { margin-bottom: 3rem; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: block;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                background-color: var(--white);
+                width: 100%;
+                flex-direction: column;
+                box-shadow: var(--shadow);
+                transition: 0.3s;
+                padding: 2rem 0;
+            }
+            
+            .nav-menu.active {
+                left: 0;
+            }
+            
+            .nav-menu li {
+                margin: 1rem 0;
+                text-align: center;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .donation-type {
+                flex-direction: column;
+            }
+            
+            .donation-type-btn {
+                border-radius: 0;
+            }
+            
+            .donation-type-btn:first-child {
+                border-radius: 4px 4px 0 0;
+            }
+            
+            .donation-type-btn:last-child {
+                border-radius: 0 0 4px 4px;
+            }
+            
+            .admin-tabs {
+                flex-direction: column;
+            }
+            
+            .donation-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .donation-status {
+                margin-top: 1rem;
+            }
+        }
+
+        /* Install App Button */
+        .install-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            display: none;
+            z-index: 1000;
+            align-items: center;
+        }
+        
+        .install-btn i {
+            margin-right: 8px;
+        }
+        
+        /* Bank Details Display */
+        .bank-details {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .bank-details p {
+            margin-bottom: 0.8rem;
+            display: flex;
+        }
+        
+        .bank-details strong {
+            min-width: 140px;
+            display: inline-block;
+        }
+        
+        /* Image Upload Styles */
+        .image-upload-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        /* Accessibility Improvements */
+        .skip-to-content {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        
+        .skip-to-content:focus {
+            top: 0;
+        }
+        
+        .high-contrast-mode {
+            filter: contrast(1.2);
+        }
+        
+        .text-resize-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .text-resize-buttons button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+    <!-- Install App Button -->
+    <button id="installApp" class="install-btn">
+        <i class="fas fa-download"></i> Install App
+    </button>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="header-container container">
+            <a href="#" class="logo" onclick="showPage('home')">
+                <i class="fas fa-hands-helping"></i>
+                Reaching The Unreachable
+            </a>
+            
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('about')">About</a></li>
+                <li><a href="#" onclick="showPage('work')">Our Work</a></li>
+                <li><a href="#" onclick="showPage('donate')">Donate</a></li>
+                <li><a href="#" onclick="showPage('contact')">Contact Us</a></li>
+                <li><a href="#" onclick="showPage('adminLogin')">Admin</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container" id="main-content">
+        <!-- Accessibility Controls -->
+        <div class="text-resize-buttons">
+            <button onclick="resizeText(1)">A+</button>
+            <button onclick="resizeText(-1)">A-</button>
+            <button onclick="toggleHighContrast()">High Contrast</button>
+        </div>
+
+        <!-- Home Page -->
+        <section id="home" class="page active">
+            <div class="hero">
+                <h1>Bringing Hope to Uganda's Most Vulnerable</h1>
+                <p>Supporting the needy, sick, orphans, and children and the church of Christ through compassion and action</p>
+                <a href="#" class="btn" onclick="showPage('donate')">Donate Now</a>
+                <a href="#" class="btn btn-secondary mt-2" onclick="showPage('about')">Learn More</a>
+            </div>
+            
+            <h2 class="section-title">How We Make a Difference</h2>
+            
+            <div class="impact-stats">
+                <div class="stat-card">
+                    <div class="stat-number">500+</div>
+                    <h3>Children Supported</h3>
+                    <p>Providing education, food, medication and care to vulnerable children</p>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">110+</div>
+                    <h3>Families Helped</h3>
+                    <p>Supporting struggling families with essential resources</p>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">30+</div>
+                    <h3>Communities Reached</h3>
+                    <p>Extending our services to remote villages across Uganda</p>
+                </div>
+            </div>
+            
+            <div class="about-content">
+                <h2 class="text-center">Our Mission</h2>
+                <p>Reaching the Unreachable is dedicated to serving the most vulnerable members of our community by providing essential resources, medical care, education, and spiritual support to those in need across Uganda.</p>
+                
+                <p>Founded and led by Florence Nalulyo, our organization works tirelessly to extend love, care, and practical support to needy families, sick individuals, orphans, and children who have limited access to basic necessities.</p>
+                
+                <div class="text-center mt-3">
+                    <a href="#" class="btn" onclick="showPage('about')">Read Our Full Story</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Page -->
+        <section id="about" class="page">
+            <h2 class="section-title">About Us</h2>
+            
+            <div class="about-content">
+                <p>Reaching the Unreachable is a Ugandan-based charitable organization founded and led by Florence Nalulyo. Our mission is to extend love, care, and practical support to the most vulnerable members of our society.</p>
+                
+                <p>Since our establishment, we have been committed to serving needy families, sick individuals, orphans, church members, and children across various communities in Uganda. We believe that everyone deserves dignity, hope, and an opportunity to thrive.</p>
+                
+                <p>Through our various programs and initiatives, we provide food, clothing, medical assistance, education support, and spiritual guidance to those who need it most. Our work is made possible by the generous support of donors and volunteers who share our vision of a more compassionate world.</p>
+                
+                <h3>Our Vision</h3>
+                <p>We envision a Uganda where every person, regardless of their circumstances, has access to basic necessities, education, healthcare, and the opportunity to live a life of dignity and purpose.</p>
+                <p>Building schools to provide totally free education, Creating health centresmwith free medical services and also rehabilitation of the drug addicts and alcohol consumers.</p>
+
+                <h3>Our Values</h3>
+                <ul>
+                    <li><strong>Compassion:</strong> We approach every person with empathy and understanding</li>
+                    <li><strong>Integrity:</strong> We maintain transparency and honesty in all our operations</li>
+                    <li><strong>Service:</strong> We are dedicated to serving those in need with humility</li>
+                    <li><strong>Community:</strong> We believe in the power of community to create lasting change</li>
+                    <li><strong>Faith:</strong> Our work is guided by our faith and commitment to loving our neighbors</li>
+                </ul>
+            </div>
+            
+            <div class="leader-profile">
+                <img src="florence.jpg" alt="Florence Nalulyo" class="leader-img">
+                <h3>Florence N</h3>
+                <p>Founder and Director</p>
+                <p class="mt-1">Florence Nalulyo has dedicated her life to serving Uganda's most vulnerable communities. Her vision and leadership have transformed countless lives through the work of Reaching the Unreachable.</p>
+            </div>
+            
+            <div class="about-content mt-3">
+                <h3 class="text-center">Our Impact</h3>
+                <p>Since our founding, we have:</p>
+                <ul>
+                    <li>Provided education support to over 500 children</li>
+                    <li>Distributed food and essential supplies to more than 120 families</li>
+                    <li>Organized medical camps serving over 800 people</li>
+                    <li>Built partnerships with 15 local churches and community organizations</li>
+                    <li>Extended our reach to 30+ villages across Uganda</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Our Work Page -->
+        <section id="work" class="page">
+            <h2 class="section-title">Our Work</h2>
+            <p class="text-center">See how we're making a difference in Ugandan communities</p>
+            
+            <div class="gallery" id="workGallery">
+                <!-- Content will be loaded dynamically from admin settings -->
+            </div>
+            
+            <div class="text-center mt-3">
+                <a href="#" class="btn" onclick="showPage('donate')">Support Our Work</a>
+            </div>
+        </section>
+
+        <!-- Donate Page -->
+        <section id="donate" class="page">
+            <h2 class="section-title">Make a Donation</h2>
+            <p class="text-center">Your support helps us continue our vital work in Ugandan communities</p>
+            
+            <div class="donation-form">
+                <div class="success-message" id="successMessage">
+                    <i class="fas fa-check-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <h3>Thank You For Your Donation!</h3>
+                    <p>Your contribution of <span id="donationAmount">$100</span> has been received successfully.</p>
+                    <p>We've sent banking instructions to your email. Please complete the transfer and upload proof below.</p>
+                </div>
+                
+                <div class="error-message-box" id="errorMessage">
+                    <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <h3>Submission Failed</h3>
+                    <p id="errorText">There was an issue processing your donation. Please try again.</p>
+                </div>
+                
+                <div id="donationForm">
+                    <div class="form-group">
+                        <label>Donation Type</label>
+                        <div class="donation-type">
+                            <div class="donation-type-btn active" data-type="one-time">One-time</div>
+                            <div class="donation-type-btn" data-type="monthly">Monthly</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Select Amount (USD)</label>
+                        <div class="amount-options">
+                            <div class="amount-option" data-amount="15">$30</div>
+                            <div class="amount-option" data-amount="30">$60</div>
+                            <div class="amount-option" data-amount="50">$100</div>
+                            <div class="amount-option active" data-amount="100">$200</div>
+                        </div>
+                        
+                        <div class="mt-2">
+                            <label>Or Enter Custom Amount</label>
+                            <input type="number" class="form-control" placeholder="Enter amount" id="customAmount" min="1">
+                            <div class="error-message" id="amountError">Please enter a valid amount</div>
+                        </div>
+                    </div>
+                    
+                    <div class="donor-info">
+                        <h3>Your Information</h3>
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" class="form-control" placeholder="Enter your full name" id="donorName" required>
+                            <div class="error-message" id="nameError">Please enter your name</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Email Address *</label>
+                            <input type="email" class="form-control" placeholder="Enter your email" id="donorEmail" required>
+                            <div class="error-message" id="emailError">Please enter a valid email address</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" class="form-control" placeholder="Enter your phone number" id="donorPhone">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Dedication (Optional)</label>
+                            <input type="text" class="form-control" placeholder="In honor or memory of someone" id="donorDedication">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mt-3">
+                        <button class="btn" style="width: 100%;" id="donateButton">Proceed to Bank Transfer</button>
+                    </div>
+                </div>
+                
+                <div class="proof-upload" id="proofUploadSection" style="display: none;">
+                    <h3>Upload Transfer Proof</h3>
+                    <p>After completing your bank transfer, please upload proof of payment here.</p>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload proof of transfer</p>
+                        <p class="mt-1" style="font-size: 0.9rem; color: #666;">Supported formats: JPG, PNG, PDF (Max 5MB)</p>
+                        <input type="file" id="proofFile" accept=".jpg,.jpeg,.png,.pdf" style="display: none;">
+                    </div>
+                    
+                    <div class="upload-preview" id="uploadPreview">
+                        <img id="previewImage" src="" alt="Proof preview">
+                        <p id="fileName"></p>
+                        <button class="btn btn-secondary mt-1" onclick="cancelUpload()">Cancel</button>
+                    </div>
+                    
+                    <div class="form-group mt-3">
+                        <button class="btn" style="width: 100%;" id="submitProofButton" disabled>Submit Proof</button>
+                    </div>
+                </div>
+                
+                <div id="bankDetails" style="display: none;">
+                    <div class="form-group">
+                        <label>Bank Transfer Instructions</label>
+                        <div class="bank-details">
+                            <p><strong>Bank Name:</strong> <span id="bankNameDisplay">Centenary Bank Uganda</span></p>
+                            <p><strong>Account Name:</strong> <span id="accountNameDisplay">Reaching the Unreachable</span></p>
+                            <p><strong>Account Number:</strong> <span id="accountNumberDisplay">3100300504</span></p>
+                            <p><strong>SWIFT Code:</strong> <span id="swiftCodeDisplay">CBUGUGKA</span></p>
+                            <p><strong>Branch:</strong> <span id="branchDisplay">Kampala Main</span></p>
+                            <p><strong>Reference Code:</strong> <span id="referenceCode">RTU2023</span></p>
+                        </div>
+                        <p class="mt-2">Please transfer <strong id="transferAmount">$200</strong> to the account above.</p>
+                        <p>After completing the transfer, return to this page to upload your proof of payment.</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button class="btn btn-secondary" onclick="showProofUpload()">I've Completed the Transfer</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Page -->
+        <section id="contact" class="page">
+            <h2 class="section-title">Contact Us</h2>
+            <p class="text-center">Get in touch with us for more information or to volunteer</p>
+            
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    
+                    <div class="contact-method">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p>+256 757 501901</p>
+                            <small>Click to chat directly with us</small>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>florencemukisa65@gmail.com</p>
+                            <small>We respond within 24 hours</small>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Location</h4>
+                            <p>Kampala, Uganda</p>
+                            <small>Main office located in central Kampala</small>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Office Hours</h4>
+                            <p>Monday - Friday: 9am - 5pm</p>
+                            <p>Saturday: 10am - 2pm</p>
+                            <small>East Africa Time (EAT)</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Send us a Message</h3>
+                    
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" class="form-control" placeholder="Enter your name" id="contactName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Your Email</label>
+                        <input type="email" class="form-control" placeholder="Enter your email" id="contactEmail">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" class="form-control" placeholder="What is your message about?" id="contactSubject">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea class="form-control" rows="5" placeholder="Type your message here" id="contactMessage"></textarea>
+                    </div>
+                    
+                    <button class="btn" onclick="sendMessage()">Send Message</button>
+                </div>
+            </div>
+            
+            <div class="about-content mt-3">
+                <h3 class="text-center">Visit Our Office</h3>
+                <p class="text-center">We welcome visitors to our main office in Kampala. Please call ahead to schedule an appointment to ensure someone is available to meet with you.</p>
+                
+                <div class="text-center mt-2">
+                    <div class="contact-method" style="justify-content: center;">
+                        <i class="fas fa-directions"></i>
+                        <div>
+                            <h4>Address</h4>
+                            <p>1234 Compassion Street, Central Division</p>
+                            <p>Kampala, Uganda</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Login Page -->
+        <section id="adminLogin" class="page">
+            <h2 class="section-title">Admin Login</h2>
+            
+            <div class="admin-login">
+                <h3>Access Admin Panel</h3>
+                <p>Please enter the password to access the admin panel:</p>
+                
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" id="adminPassword" placeholder="Enter admin password">
+                </div>
+                
+                <button class="btn" onclick="loginToAdmin()">Login</button>
+                
+                <p id="loginError" style="color: red; margin-top: 1rem; display: none;">Incorrect password. Please try again.</p>
+            </div>
+        </section>
+
+        <!-- Admin Panel -->
+        <section id="admin" class="page">
+            <h2 class="section-title">Admin Panel</h2>
+            <p class="text-center">Manage website content and donations</p>
+            
+            <div class="admin-panel">
+                <div class="admin-tabs">
+                    <div class="admin-tab active" onclick="showAdminTab('donations')">Donations</div>
+                    <div class="admin-tab" onclick="showAdminTab('media')">Media Management</div>
+                    <div class="admin-tab" onclick="showAdminTab('bank')">Bank Details</div>
+                    <div class="admin-tab" onclick="showAdminTab('about')">About Page</div>
+                    <div class="admin-tab" onclick="showAdminTab('contact')">Contact Info</div>
+                    <div class="admin-tab" onclick="logoutAdmin()">Logout</div>
+                </div>
+                
+                <div id="donationsAdmin" class="admin-content active">
+                    <h3>Donation Management</h3>
+                    <p>View and verify bank transfer proofs submitted by donors.</p>
+                    
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search donations..." id="donationSearch">
+                    </div>
+                    
+                    <div id="donationList">
+                        <!-- Donation items will be loaded here -->
+                    </div>
+                </div>
+                
+                <div id="mediaAdmin" class="admin-content">
+                    <h3>Media Management</h3>
+                    <p>Add YouTube videos and images to the "Our Work" section.</p>
+                    
+                    <div class="form-group">
+                        <label>Media Type</label>
+                        <select class="form-control" id="mediaType" onchange="toggleMediaInput()">
+                            <option value="youtube">YouTube Video</option>
+                            <option value="image">Image</option>
+                        </select>
+                    </div>
+                    
+                    <div id="youtubeInput">
+                        <div class="form-group">
+                            <label>YouTube Video URL</label>
+                            <input type="url" class="form-control" placeholder="https://youtube.com/embed/..." id="youtubeUrl">
+                        </div>
+                    </div>
+                    
+                    <div id="imageInput" style="display: none;">
+                        <div class="form-group">
+                            <label>Upload Image</label>
+                            <input type="file" class="form-control" id="imageUpload" accept="image/*">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" class="form-control" placeholder="Media title" id="mediaTitle">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" rows="3" placeholder="Media description" id="mediaDescription"></textarea>
+                    </div>
+                    
+                    <button class="btn" onclick="addMedia()">Add Media</button>
+                    
+                    <h3 class="mt-3">Current Media</h3>
+                    <div class="media-grid" id="adminMediaGrid">
+                        <!-- Media will be loaded here -->
+                    </div>
+                </div>
+                
+                <div id="bankAdmin" class="admin-content">
+                    <h3>Bank Account Details</h3>
+                    <p>Edit the bank details that will be shown to donors.</p>
+                    
+                    <div class="form-group">
+                        <label>Bank Name</label>
+                        <input type="text" class="form-control" id="bankName" value="Centenary Bank Uganda">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Account Name</label>
+                        <input type="text" class="form-control" id="accountName" value="Reaching the Unreachable">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Account Number</label>
+                        <input type="text" class="form-control" id="accountNumber" value="3100300504">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>SWIFT Code</label>
+                        <input type="text" class="form-control" id="swiftCode" value="CBUGUGKA">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Branch</label>
+                        <input type="text" class="form-control" id="branch" value="Kampala Main">
+                    </div>
+                    
+                    <button class="btn" onclick="saveBankDetails()">Save Bank Details</button>
+                </div>
+                
+                <div id="aboutAdmin" class="admin-content">
+                    <h3>Edit About Page</h3>
+                    <div class="form-group">
+                        <label>Organization Description</label>
+                        <textarea class="form-control" rows="6" id="orgDescription">Reaching the Unreachable is a Ugandan-based charitable organization founded and led by Pastor Florence N. Our mission is to extend love, care, and practical support to the most vulnerable members of our society.</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Our Vision</label>
+                        <textarea class="form-control" rows="4" id="orgVision">We envision a Uganda where every person, regardless of their circumstances, has access to basic necessities, education, healthcare, and the opportunity to live a life of dignity and purpose.</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Our Mission</label>
+                        <textarea class="form-control" rows="4" id="orgMission">To provide essential resources, medical care, education, and spiritual support to needy families, sick individuals, orphans, and children across Uganda.</textarea>
+                    </div>
+                    
+                    <h3>Leader Information</h3>
+                    <div class="form-group">
+                        <label>Leader Name</label>
+                        <input type="text" class="form-control" value="Florence N" id="leaderName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Leader Title</label>
+                        <input type="text" class="form-control" value="Founder and Director" id="leaderTitle">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Leader Description</label>
+                        <textarea class="form-control" rows="4" id="leaderDescription">Florence has dedicated her life to serving Uganda's most vulnerable communities. Her vision and leadership have transformed countless lives through the work of Reaching the Unreachable.</textarea>
+                    </div>
+                    
+                    <button class="btn" onclick="saveAboutPage()">Save About Page</button>
+                </div>
+                
+                <div id="contactAdmin" class="admin-content">
+                    <h3>Contact Information</h3>
+                    <div class="form-group">
+                        <label>WhatsApp Number</label>
+                        <input type="text" class="form-control" value="+256757501901" id="whatsappNumber">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" class="form-control" value="florencemukisa65@gmail.com" id="contactEmailAdmin">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Physical Address</label>
+                        <textarea class="form-control" rows="3" id="physicalAddress">1234 Compassion Street, Central Division, Kampala, Uganda</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Office Hours</label>
+                        <textarea class="form-control" rows="3" id="officeHours">Monday - Friday: 9am - 5pm
+Saturday: 10am - 2pm
+Sunday: Closed</textarea>
+                    </div>
+                    
+                    <button class="btn" onclick="saveContactInfo()">Save Contact Information</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Processing Overlay -->
+    <div class="processing-overlay" id="processingOverlay">
+        <div class="processing-spinner">
+            <div class="spinner"></div>
+            <h3>Processing Your Donation</h3>
+            <p>Please wait while we process your information</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Reaching the Unreachable</h3>
+                    <p>Bringing hope and help to the needy, sick, orphans, and children in Ugandan communities.</p>
+                    <p>Founded and led by Florence N</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="#" onclick="showPage('home')">Home</a></p>
+                    <p><a href="#" onclick="showPage('about')">About Us</a></p>
+                    <p><a href="#" onclick="showPage('work')">Our Work</a></p>
+                    <p><a href="#" onclick="showPage('donate')">Donate</a></p>
+                    <p><a href="#" onclick="showPage('contact')">Contact</a></p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                    
+                    <div class="mt-2">
+                        <p>Subscribe to our newsletter</p>
+                        <div style="display: flex;">
+                            <input type="email" placeholder="Your email" style="flex: 1; padding: 0.5rem; border: none; border-radius: 4px 0 0 4px;">
+                            <button style="background: var(--accent); color: white; border: none; padding: 0.5rem; border-radius: 0 4px 4px 0; cursor: pointer;">Subscribe</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2020 Reaching the Unreachable. All rights reserved.</p>
+                <p>Registered Non-Profit Organization in Uganda</p>
+                <p>Designed by The Kingstorm Technologies</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Data storage (in a real app, this would be a database)
+        let donations = JSON.parse(localStorage.getItem('donations')) || [];
+        let media = JSON.parse(localStorage.getItem('media')) || [];
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings')) || {
+            aboutPage: {},
+            contactInfo: {},
+            bankDetails: {
+                bankName: "Centenary Bank Uganda",
+                accountName: "Reaching the Unreachable",
+                accountNumber: "3100300504",
+                swiftCode: "CBUGUGKA",
+                branch: "Kampala Main"
+            },
+            adminPassword: "reach2412"
+        };
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            initNavigation();
+            initDonationPage();
+            loadMediaContent();
+            initAdminPanel();
+            initInstallButton();
+            initAccessibility();
+        });
+
+        // Page Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            document.getElementById(pageId).classList.add('active');
+            
+            // Close mobile menu if open
+            document.getElementById('navMenu').classList.remove('active');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function initNavigation() {
+            // Mobile Navigation Toggle
+            document.getElementById('navToggle').addEventListener('click', function() {
+                document.getElementById('navMenu').classList.toggle('active');
+            });
+
+            // Check URL hash on load
+            const hash = window.location.hash.substring(1);
+            if (hash && document.getElementById(hash)) {
+                showPage(hash);
+            }
+        }
+
+        // Donation Page Functionality
+        function initDonationPage() {
+            let selectedAmount = 100;
+            let donationType = 'one-time';
+            let proofFile = null;
+
+            // Initialize donation type buttons
+            document.querySelectorAll('.donation-type-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.donation-type-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    donationType = this.getAttribute('data-type');
+                });
+            });
+
+            // Initialize amount options
+            document.querySelectorAll('.amount-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.amount-option').forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedAmount = parseFloat(this.getAttribute('data-amount'));
+                    document.getElementById('customAmount').value = '';
+                });
+            });
+
+            // Custom amount input
+            document.getElementById('customAmount').addEventListener('input', function() {
+                if (this.value) {
+                    selectedAmount = parseFloat(this.value);
+                    document.querySelectorAll('.amount-option').forEach(opt => opt.classList.remove('active'));
+                }
+            });
+
+            // Donate button
+            document.getElementById('donateButton').addEventListener('click', function() {
+                if (validateDonationForm()) {
+                    processDonation(selectedAmount, donationType);
+                }
+            });
+
+            // File upload handling
+            document.getElementById('uploadArea').addEventListener('click', function() {
+                document.getElementById('proofFile').click();
+            });
+
+            document.getElementById('proofFile').addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    proofFile = e.target.files[0];
+                    previewProof(proofFile);
+                }
+            });
+
+            // Submit proof button
+            document.getElementById('submitProofButton').addEventListener('click', function() {
+                submitProof(proofFile);
+            });
+        }
+
+        function validateDonationForm() {
+            let isValid = true;
+            
+            // Reset error messages
+            document.querySelectorAll('.error-message').forEach(msg => {
+                msg.style.display = 'none';
+            });
+            
+            document.querySelectorAll('.form-control').forEach(input => {
+                input.classList.remove('error');
+            });
+            
+            // Validate name
+            const name = document.getElementById('donorName').value;
+            if (!name.trim()) {
+                document.getElementById('nameError').style.display = 'block';
+                document.getElementById('donorName').classList.add('error');
+                isValid = false;
+            }
+            
+            // Validate email
+            const email = document.getElementById('donorEmail').value;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                document.getElementById('emailError').style.display = 'block';
+                document.getElementById('donorEmail').classList.add('error');
+                isValid = false;
+            }
+            
+            // Validate amount
+            const customAmount = document.getElementById('customAmount').value;
+            const amount = customAmount ? parseFloat(customAmount) : selectedAmount;
+            
+            if (isNaN(amount) || amount <= 0) {
+                document.getElementById('amountError').style.display = 'block';
+                document.getElementById('customAmount').classList.add('error');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        function processDonation(amount, type) {
+            // Show processing overlay
+            document.getElementById('processingOverlay').style.display = 'flex';
+            
+            // Get donor info
+            const name = document.getElementById('donorName').value;
+            const email = document.getElementById('donorEmail').value;
+            const phone = document.getElementById('donorPhone').value;
+            const dedication = document.getElementById('donorDedication').value;
+            
+            // Generate reference code
+            const refCode = 'RTU' + Date.now().toString().slice(-6);
+            
+            setTimeout(() => {
+                // Hide donation form, show bank details
+                document.getElementById('donationForm').style.display = 'none';
+                document.getElementById('bankDetails').style.display = 'block';
+                
+                // Update bank details with amount and reference
+                document.getElementById('transferAmount').textContent = '$' + amount;
+                document.getElementById('referenceCode').textContent = refCode;
+                document.getElementById('donationAmount').textContent = '$' + amount;
+                
+                // Update bank details from admin settings
+                document.getElementById('bankNameDisplay').textContent = adminSettings.bankDetails.bankName;
+                document.getElementById('accountNameDisplay').textContent = adminSettings.bankDetails.accountName;
+                document.getElementById('accountNumberDisplay').textContent = adminSettings.bankDetails.accountNumber;
+                document.getElementById('swiftCodeDisplay').textContent = adminSettings.bankDetails.swiftCode;
+                document.getElementById('branchDisplay').textContent = adminSettings.bankDetails.branch;
+                
+                // Create donation record
+                const donation = {
+                    id: Date.now(),
+                    donorName: name,
+                    donorEmail: email,
+                    donorPhone: phone,
+                    dedication: dedication,
+                    amount: amount,
+                    type: type,
+                    reference: refCode,
+                    status: 'pending',
+                    date: new Date().toISOString(),
+                    proof: null
+                };
+                
+                donations.push(donation);
+                localStorage.setItem('donations', JSON.stringify(donations));
+                
+                // Hide processing overlay
+                document.getElementById('processingOverlay').style.display = 'none';
+                
+                // Send confirmation email (simulated)
+                simulateEmailSend(email, name, amount, refCode);
+            }, 1500);
+        }
+
+        function showProofUpload() {
+            document.getElementById('bankDetails').style.display = 'none';
+            document.getElementById('proofUploadSection').style.display = 'block';
+        }
+
+        function previewProof(file) {
+            const preview = document.getElementById('uploadPreview');
+            const fileName = document.getElementById('fileName');
+            const previewImage = document.getElementById('previewImage');
+            
+            if (file.type.includes('image')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewImage.style.display = 'none';
+            }
+            
+            fileName.textContent = file.name;
+            preview.style.display = 'block';
+            document.getElementById('submitProofButton').disabled = false;
+        }
+
+        function cancelUpload() {
+            document.getElementById('proofFile').value = '';
+            document.getElementById('uploadPreview').style.display = 'none';
+            document.getElementById('submitProofButton').disabled = true;
+        }
+
+        function submitProof(file) {
+            // Show processing overlay
+            document.getElementById('processingOverlay').style.display = 'flex';
+            
+            // In a real application, this would upload to a server
+            setTimeout(() => {
+                // Find the donation and update with proof
+                const latestDonation = donations[donations.length - 1];
+                latestDonation.proof = file.name;
+                latestDonation.status = 'pending_review';
+                
+                localStorage.setItem('donations', JSON.stringify(donations));
+                
+                // Show success message
+                document.getElementById('proofUploadSection').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+                
+                // Hide processing overlay
+                document.getElementById('processingOverlay').style.display = 'none';
+                
+                // Send confirmation email (simulated)
+                simulateProofReceived(latestDonation.donorEmail, latestDonation.donorName);
+            }, 1500);
+        }
+
+        function simulateEmailSend(email, name, amount, refCode) {
+            console.log(`Email sent to: ${email}`);
+            console.log(`Subject: Thank you for your donation for Reaching the Unreachable`);
+            console.log(`Body: 
+                Dear ${name},
+                
+                Thank you for your donation of $${amount} for Reaching the Unreachable.
+                Please transfer the funds to our bank account using reference code: ${refCode}
+                
+                Bank Details:
+                Bank Name: ${adminSettings.bankDetails.bankName}
+                Account Name: ${adminSettings.bankDetails.accountName}
+                Account Number: ${adminSettings.bankDetails.accountNumber}
+                SWIFT Code: ${adminSettings.bankDetails.swiftCode}
+                Branch: ${adminSettings.bankDetails.branch}
+                
+                After completing the transfer, please return to our website to upload proof of payment.
+                
+                Thank you for your support!
+            `);
+        }
+
+        function simulateProofReceived(email, name) {
+            console.log(`Email sent to: ${email}`);
+            console.log(`Subject: Proof of Payment Received`);
+            console.log(`Body: 
+                Dear ${name},
+                
+                We've received your proof of payment. Our team will verify the transfer and update you once it's confirmed.
+                
+                Thank you for your support!
+            `);
+        }
+
+        // Media Management
+        function loadMediaContent() {
+            const gallery = document.getElementById('workGallery');
+            
+            if (media.length === 0) {
+                // Load default content if no media exists
+                gallery.innerHTML = `
+                    
+                    
+                    <div class="gallery-item">
+                        <img src="provideBooks.jpg" alt="Children receiving education" class="gallery-img">
+                        <div class="gallery-content">
+                            <h3>Education Support</h3>
+                            <p>Providing school supplies, tuition assistance, and educational resources to children in need.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-item">
+                        <img src="teamment.jpg" alt="Medical camp" class="gallery-img">
+                        <div class="gallery-content">
+                            <h3>Fun time Assistance</h3>
+                            <p>Organizing health camps, providing medicines, and connecting communities with children camp resources.</p>
+                        </div>
+                    </div>
+
+                    <div class="gallery-item">
+                        <img src="villageoutreach.jpg" alt="Children receiving education" class="gallery-img">
+                        <div class="gallery-content">
+                            <h3>Education Support</h3>
+                            <p>Providing school supplies, tuition assistance, and educational resources to children in need.</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Load saved media
+                gallery.innerHTML = '';
+                media.forEach(item => {
+                    if (item.type === 'youtube') {
+                        gallery.innerHTML += `
+                            <div class="gallery-item">
+                                <div class="video-container">
+                                    <iframe src="${item.url}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                                <div class="gallery-content">
+                                    <h3>${item.title}</h3>
+                                    <p>${item.description}</p>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        gallery.innerHTML += `
+                            <div class="gallery-item">
+                                <img src="${item.url}" alt="${item.title}" class="gallery-img">
+                                <div class="gallery-content">
+                                    <h3>${item.title}</h3>
+                                    <p>${item.description}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+        }
+
+        // Admin Panel Functionality
+        function initAdminPanel() {
+            // Load donations for admin
+            loadDonationsForAdmin();
+            
+            // Load media for admin
+            loadMediaForAdmin();
+            
+            // Load bank details
+            if (adminSettings.bankDetails) {
+                document.getElementById('bankName').value = adminSettings.bankDetails.bankName;
+                document.getElementById('accountName').value = adminSettings.bankDetails.accountName;
+                document.getElementById('accountNumber').value = adminSettings.bankDetails.accountNumber;
+                document.getElementById('swiftCode').value = adminSettings.bankDetails.swiftCode;
+                document.getElementById('branch').value = adminSettings.bankDetails.branch;
+            }
+        }
+
+        function loadDonationsForAdmin() {
+            const donationList = document.getElementById('donationList');
+            donationList.innerHTML = '';
+            
+            if (donations.length === 0) {
+                donationList.innerHTML = '<p>No donations yet.</p>';
+                return;
+            }
+            
+            donations.forEach(donation => {
+                const statusClass = donation.status === 'verified' ? 'status-verified' : 'status-pending';
+                
+                donationList.innerHTML += `
+                    <div class="donation-item">
+                        <div>
+                            <h4>${donation.donorName} - $${donation.amount}</h4>
+                            <p>${donation.donorEmail} | ${new Date(donation.date).toLocaleDateString()}</p>
+                            <p>Reference: ${donation.reference}</p>
+                            ${donation.proof ? `<p>Proof: ${donation.proof}</p>` : ''}
+                        </div>
+                        <div class="donation-status ${statusClass}">${donation.status}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function loadMediaForAdmin() {
+            const mediaGrid = document.getElementById('adminMediaGrid');
+            mediaGrid.innerHTML = '';
+            
+            media.forEach(item => {
+                mediaGrid.innerHTML += `
+                    <div class="media-item">
+                        ${item.type === 'youtube' ? 
+                            `<img src="https://img.youtube.com/vi/${getYouTubeId(item.url)}/hqdefault.jpg" alt="${item.title}">` :
+                            `<img src="${item.url}" alt="${item.title}">`
+                        }
+                        <div class="media-actions">
+                            <button title="Edit"><i class="fas fa-edit"></i></button>
+                            <button title="Delete" onclick="deleteMediaItem(${item.id})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function getYouTubeId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function toggleMediaInput() {
+            const mediaType = document.getElementById('mediaType').value;
+            if (mediaType === 'youtube') {
+                document.getElementById('youtubeInput').style.display = 'block';
+                document.getElementById('imageInput').style.display = 'none';
+            } else {
+                document.getElementById('youtubeInput').style.display = 'none';
+                document.getElementById('imageInput').style.display = 'block';
+            }
+        }
+
+        function addMedia() {
+            const mediaType = document.getElementById('mediaType').value;
+            const title = document.getElementById('mediaTitle').value;
+            const description = document.getElementById('mediaDescription').value;
+            
+            if (!title) {
+                alert('Please provide a title');
+                return;
+            }
+            
+            let url = '';
+            if (mediaType === 'youtube') {
+                url = document.getElementById('youtubeUrl').value;
+                if (!url) {
+                    alert('Please provide a YouTube URL');
+                    return;
+                }
+            } else {
+                const fileInput = document.getElementById('imageUpload');
+                if (fileInput.files.length === 0) {
+                    alert('Please select an image to upload');
+                    return;
+                }
+                
+                // In a real app, this would upload to a server
+                // For demo purposes, we'll create a local URL
+                const file = fileInput.files[0];
+                url = URL.createObjectURL(file);
+            }
+            
+            const newMedia = {
+                id: Date.now(),
+                type: mediaType,
+                url: url,
+                title: title,
+                description: description
+            };
+            
+            media.push(newMedia);
+            localStorage.setItem('media', JSON.stringify(media));
+            
+            // Reset form
+            document.getElementById('youtubeUrl').value = '';
+            document.getElementById('imageUpload').value = '';
+            document.getElementById('mediaTitle').value = '';
+            document.getElementById('mediaDescription').value = '';
+            
+            // Reload media
+            loadMediaForAdmin();
+            loadMediaContent();
+            
+            alert('Media added successfully!');
+        }
+
+        function deleteMediaItem(id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                media = media.filter(item => item.id !== id);
+                localStorage.setItem('media', JSON.stringify(media));
+                loadMediaForAdmin();
+                loadMediaContent();
+            }
+        }
+
+        function saveBankDetails() {
+            adminSettings.bankDetails = {
+                bankName: document.getElementById('bankName').value,
+                accountName: document.getElementById('accountName').value,
+                accountNumber: document.getElementById('accountNumber').value,
+                swiftCode: document.getElementById('swiftCode').value,
+                branch: document.getElementById('branch').value
+            };
+            
+            localStorage.setItem('adminSettings', JSON.stringify(adminSettings));
+            alert('Bank details saved successfully!');
+        }
+
+        function saveAboutPage() {
+            adminSettings.aboutPage = {
+                description: document.getElementById('orgDescription').value,
+                vision: document.getElementById('orgVision').value,
+                mission: document.getElementById('orgMission').value,
+                leaderName: document.getElementById('leaderName').value,
+                leaderTitle: document.getElementById('leaderTitle').value,
+                leaderDescription: document.getElementById('leaderDescription').value
+            };
+            
+            localStorage.setItem('adminSettings', JSON.stringify(adminSettings));
+            alert('About page saved successfully!');
+        }
+
+        function saveContactInfo() {
+            adminSettings.contactInfo = {
+                whatsapp: document.getElementById('whatsappNumber').value,
+                email: document.getElementById('contactEmailAdmin').value,
+                address: document.getElementById('physicalAddress').value,
+                hours: document.getElementById('officeHours').value
+            };
+            
+            localStorage.setItem('adminSettings', JSON.stringify(adminSettings));
+            alert('Contact information saved successfully!');
+        }
+
+        // Admin Authentication
+        function loginToAdmin() {
+            const passwordInput = document.getElementById('adminPassword').value;
+            
+            if (passwordInput === adminSettings.adminPassword) {
+                showPage('admin');
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('loginError').style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function logoutAdmin() {
+            showPage('home');
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function showAdminTab(tabId) {
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.admin-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tabId}Admin`).classList.add('active');
+        }
+
+        // Contact Form
+        function sendMessage() {
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const subject = document.getElementById('contactSubject').value;
+            const message = document.getElementById('contactMessage').value;
+            
+            if (!name || !email || !subject || !message) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            alert(`Thank you for your message, ${name}! We will get back to you soon.`);
+            
+            // Reset form
+            document.getElementById('contactName').value = '';
+            document.getElementById('contactEmail').value = '';
+            document.getElementById('contactSubject').value = '';
+            document.getElementById('contactMessage').value = '';
+        }
+
+        // Install App Functionality
+        let deferredPrompt;
+        
+        function initInstallButton() {
+            const installButton = document.getElementById('installApp');
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                // Prevent the mini-infobar from appearing on mobile
+                e.preventDefault();
+                // Stash the event so it can be triggered later
+                deferredPrompt = e;
+                // Show the install button
+                installButton.style.display = 'flex';
+            });
+            
+            installButton.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                
+                // Show the install prompt
+                deferredPrompt.prompt();
+                
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                } else {
+                    console.log('User dismissed the install prompt');
+                }
+                
+                // Clear the saved prompt since it can't be used again
+                deferredPrompt = null;
+                
+                // Hide the install button
+                installButton.style.display = 'none';
+            });
+            
+            window.addEventListener('appinstalled', () => {
+                // Hide the install button
+                installButton.style.display = 'none';
+                // Clear the deferredPrompt variable
+                deferredPrompt = null;
+                console.log('PWA was installed');
+            });
+        }
+
+        // Accessibility Features
+        function initAccessibility() {
+            // Check if user has previously set high contrast mode
+            if (localStorage.getItem('highContrast') === 'true') {
+                document.body.classList.add('high-contrast-mode');
+            }
+            
+            // Check if user has previously set text size
+            const savedSize = localStorage.getItem('textSize');
+            if (savedSize) {
+                document.body.style.fontSize = savedSize;
+            }
+        }
+
+        function resizeText(direction) {
+            const currentSize = parseFloat(getComputedStyle(document.body).fontSize);
+            const newSize = currentSize + (direction * 2);
+            
+            // Limit text size between 12px and 24px
+            if (newSize >= 12 && newSize <= 24) {
+                document.body.style.fontSize = `${newSize}px`;
+                localStorage.setItem('textSize', `${newSize}px`);
+            }
+        }
+
+        function toggleHighContrast() {
+            document.body.classList.toggle('high-contrast-mode');
+            localStorage.setItem('highContrast', document.body.classList.contains('high-contrast-mode'));
+        }
+    </script>
+</body>
+</html>
